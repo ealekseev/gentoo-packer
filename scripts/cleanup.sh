@@ -12,18 +12,15 @@ rm -rf /mnt/gentoo/var/log/*
 rm -rf /mnt/gentoo/var/tmp/*
 
 chroot /mnt/gentoo /bin/bash <<'EOF'
-wget http://intgat.tigress.co.uk/rmy/uml/zerofree-1.0.3.tgz
-tar xvzf zerofree-*.tgz
-cd zerofree*/
-make
+emerge -q sys-fs/zerofree
 EOF
 
-mv /mnt/gentoo/zerofree* ./
-cd zerofree*/
+cp /mnt/gentoo/sbin/zerofree ./
+chmod +x ./zerofree
 
 mount -o remount,ro /mnt/gentoo
-./zerofree /dev/sda4
+./zerofree /dev/${DISK_PREFIX}a4
 
-swapoff /dev/sda3
-dd if=/dev/zero of=/dev/sda3
-mkswap /dev/sda3
+swapoff /dev/${DISK_PREFIX}a3
+dd if=/dev/zero of=/dev/${DISK_PREFIX}a3
+mkswap /dev/${DISK_PREFIX}a3

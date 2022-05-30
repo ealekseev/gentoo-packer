@@ -1,6 +1,6 @@
 #!/bin/bash
 
 chroot /mnt/gentoo /bin/bash <<'EOF'
-mkdir /usr/portage
-emerge-webrsync
+mkdir /var/db/repos/gentoo
+emerge-webrsync -q
 EOF

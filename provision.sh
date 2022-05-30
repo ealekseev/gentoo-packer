@@ -11,6 +11,12 @@ then
   SCRIPTS=.
 fi
 
+if [ "$VM_TYPE" = "qemu" ]; then
+    export DISK_PREFIX="vd"
+else
+    export DISK_PREFIX="sd"
+fi
+
 chmod +x $SCRIPTS/scripts/*.sh
 
 for script in \
@@ -25,7 +31,6 @@ for script in \
   grub        \
   $VM_TYPE    \
   network     \
-  vagrant     \
   cleanup
 do
   "$SCRIPTS/scripts/$script.sh"
