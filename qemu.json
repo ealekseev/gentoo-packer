@@ -39,11 +39,13 @@
       "type": "qemu",
       "accelerator": "kvm",
       "format": "qcow2",
-      "vm_name": "Gentoo",
+      "vm_name": "gentoo-build-{{user `stage3`}}",
       "net_device": "virtio-net",
       "disk_interface": "virtio",
       "qemuargs": [
-        [ "-display", "none" ]
+        [ "-display", "none" ],
+        [ "-m", "2048M" ],
+        [ "-smp", "cpus=2" ]
       ],
       "output_directory": "stage3"
     }
