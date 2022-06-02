@@ -24,6 +24,7 @@ for script in \
   stage3      \
   mounts      \
   resolv.conf \
+  prepare_chroot \
   portage     \
   timezone    \
   fstab       \

@@ -64,7 +64,8 @@
         "SCRIPTS=/tmp",
 	      "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/",
         "UNPRIVILEGED_USER={{user `unprivileged_user`}}",
-        "UNPRIVILEGED_USER_PASSWORD={{user `unprivileged_user_password`}}"
+        "UNPRIVILEGED_USER_PASSWORD={{user `unprivileged_user_password`}}",
+        "GENTOO_KERNEL={{user `kernel`}}"
       ],
       "scripts": [
         "provision.sh"
@@ -75,5 +76,6 @@
   "variables": {
     "password": "Packer_123",
     "username": "root",
+    "kernel": "gentoo-kernel-bin"
   }
 }
