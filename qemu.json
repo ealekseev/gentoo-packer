@@ -62,7 +62,9 @@
         "STAGE3={{user `stage3`}}",
         "VM_TYPE=qemu",
         "SCRIPTS=/tmp",
-	"GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/"
+	      "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/",
+        "UNPRIVILEGED_USER={{user `unprivileged_user`}}",
+        "UNPRIVILEGED_USER_PASSWORD={{user `unprivileged_user_password`}}"
       ],
       "scripts": [
         "provision.sh"
@@ -72,8 +74,6 @@
   ],
   "variables": {
     "password": "Packer_123",
-    "stage3": "20220522T170533Z",
-    "username": "root"
+    "username": "root",
   }
 }
-

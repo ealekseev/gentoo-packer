@@ -4,3 +4,4 @@ output-virtualbox-iso/
 output-vmware-iso/
 output-qemu/
 stage3/
+variables.json
