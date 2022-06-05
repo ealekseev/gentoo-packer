@@ -56,7 +56,7 @@ source "qemu" "gentoo-amd64" {
   boot_command      = ["gentoo-nofb", "<enter>", "<wait10>", "<enter>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "passwd ${var.username}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "/etc/init.d/sshd start", "<enter>", "<wait>"]
   boot_wait         = "10s"
   disk_interface    = "virtio"
-  disk_size         = "10000"
+  disk_size         = "10G"
   format            = "qcow2"
   headless          = "true"
   iso_checksum      = "sha512:48d3a8f510fe2d71d6c1a84db888bc1d11756f0110be7e437ceea15dd05ab787a8c32b47a90c775b5aecadcb5c75db0bf4a5bb652922974cfbb77881eb3f6dff"

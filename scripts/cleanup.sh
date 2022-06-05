@@ -19,8 +19,4 @@ cp /mnt/gentoo/sbin/zerofree ./
 chmod +x ./zerofree
 
 mount -o remount,ro /mnt/gentoo
-./zerofree /dev/${DISK_PREFIX}a4
-
-swapoff /dev/${DISK_PREFIX}a3
-dd if=/dev/zero of=/dev/${DISK_PREFIX}a3
-mkswap /dev/${DISK_PREFIX}a3
+./zerofree /dev/${DISK_PREFIX}a2
