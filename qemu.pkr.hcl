@@ -76,7 +76,7 @@ source "qemu" "gentoo-amd64" {
 # documentation for build blocks can be found here:
 # https://www.packer.io/docs/templates/hcl_templates/blocks/build
 build {
-  description = "Faithful Stage 3 Gentoo Installation (VMWare)"
+  description = "Faithful Stage 3 Gentoo Installation"
 
   sources = ["source.qemu.gentoo-amd64"]
 

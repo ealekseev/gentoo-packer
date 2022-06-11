@@ -33,6 +33,7 @@ for script in \
   $VM_TYPE    \
   network     \
   users       \
+  cloud-init  \
   cleanup
 do
   "$SCRIPTS/scripts/$script.sh"
