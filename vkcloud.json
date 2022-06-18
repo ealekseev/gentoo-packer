@@ -1,0 +1,7 @@
+{
+  "stage3": "20220522T170533Z",
+  "unprivileged_user": "gentoolocal",
+  "unprivileged_user_password": "Foobarcom_123",
+  "image_format": "raw",
+  "disk_size": "6G"
+}

@@ -16,17 +16,17 @@
 # constraints documentation
 # https://www.packer.io/docs/templates/hcl_templates/variables#type-constraints for more info.
 variable "stage3" {
-  type = string
+  type    = string
   default = "20220522T170533Z"
 }
 
 variable "unprivileged_user" {
-  type = string
+  type    = string
   default = "gentoo"
 }
 
 variable "unprivileged_user_password" {
-  type = string
+  type    = string
   default = "Packer_123"
 }
 
@@ -45,6 +45,16 @@ variable "username" {
   default = "root"
 }
 
+variable "image_format" {
+  type    = string
+  default = "qcow2"
+}
+
+variable "disk_size" {
+  type    = string
+  default = "10G"
+}
+
 # source blocks are generated from your builders; a source can be referenced in
 # build blocks. A build block runs provisioner and post-processors on a
 # source. Read the documentation for source blocks here:
@@ -52,24 +62,23 @@ variable "username" {
 # could not parse template for following block: "template: hcl2_upgrade:2: bad character U+0060 '`'"
 
 source "qemu" "gentoo-amd64" {
-  accelerator       = "kvm"
-  boot_command      = ["gentoo-nofb", "<enter>", "<wait10>", "<enter>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "passwd ${var.username}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "/etc/init.d/sshd start", "<enter>", "<wait>"]
-  boot_wait         = "10s"
-  disk_interface    = "virtio"
-  disk_size         = "10G"
-  format            = "qcow2"
-  headless          = "true"
-  iso_checksum      = "sha512:48d3a8f510fe2d71d6c1a84db888bc1d11756f0110be7e437ceea15dd05ab787a8c32b47a90c775b5aecadcb5c75db0bf4a5bb652922974cfbb77881eb3f6dff"
-  iso_url           = "https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/${var.stage3}/install-amd64-minimal-${var.stage3}.iso"
-  net_device        = "virtio-net"
-  output_directory  = "stage3"
-  qemuargs          = [["-display", "none"], ["-m", "2048M"], ["-smp", "cpus=2"]]
-  shutdown_command  = "shutdown -hP now"
-  ssh_password      = var.password
-  ssh_timeout       = "20m"
-  ssh_username      = var.username
-  ssh_wait_timeout  = "20s"
-  vm_name           = "gentoo-build-${var.stage3}"
+  accelerator      = "kvm"
+  boot_command     = ["gentoo-nofb", "<enter>", "<wait10>", "<enter>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "<wait10>", "passwd ${var.username}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "${var.password}", "<enter>", "<wait>", "/etc/init.d/sshd start", "<enter>", "<wait>"]
+  boot_wait        = "10s"
+  disk_interface   = "virtio"
+  disk_size        = var.disk_size
+  format           = "qcow2"
+  headless         = "true"
+  iso_checksum     = "sha512:48d3a8f510fe2d71d6c1a84db888bc1d11756f0110be7e437ceea15dd05ab787a8c32b47a90c775b5aecadcb5c75db0bf4a5bb652922974cfbb77881eb3f6dff"
+  iso_url          = "https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/${var.stage3}/install-amd64-minimal-${var.stage3}.iso"
+  net_device       = "virtio-net"
+  qemuargs         = [["-display", "none"], ["-m", "2048M"], ["-smp", "cpus=2"]]
+  shutdown_command = "shutdown -hP now"
+  ssh_password     = var.password
+  ssh_timeout      = "20m"
+  ssh_username     = var.username
+  ssh_wait_timeout = "20s"
+  vm_name          = "gentoo-build-${var.stage3}"
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
@@ -88,5 +97,27 @@ build {
   provisioner "shell" {
     environment_vars = ["STAGE3=${var.stage3}", "VM_TYPE=qemu", "SCRIPTS=/tmp", "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/", "UNPRIVILEGED_USER=${var.unprivileged_user}", "UNPRIVILEGED_USER_PASSWORD=${var.unprivileged_user_password}", "GENTOO_KERNEL=${var.kernel}"]
     scripts          = ["provision.sh"]
+  }
+
+  post-processors {
+    post-processor "manifest" {
+      output = "manifest.json"
+    }
+
+    post-processor "shell-local" {
+      environment_vars = [
+        "IMAGE_FORMAT=${var.image_format}",
+        "OUTPUT_NAME=gentoo-${var.stage3}.${var.image_format}"
+      ]
+      script = "./convert.sh"  
+    }
+  
+    post-processor "artifice" {
+      files = ["gentoo-${var.stage3}.${var.image_format}"]
+    }
+
+    post-processor "manifest" {
+      output = "manifest-2.json"
+    }
   }
 }

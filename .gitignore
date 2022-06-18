@@ -5,3 +5,5 @@ output-vmware-iso/
 output-qemu/
 stage3/
 variables.json
+output-*
+manifest*
