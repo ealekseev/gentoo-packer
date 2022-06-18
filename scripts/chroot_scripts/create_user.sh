@@ -8,6 +8,7 @@ echo ${UNPRIVILEGED_USER}:${UNPRIVILEGED_USER_PASSWORD} | chpasswd
 echo "${UNPRIVILEGED_USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${UNPRIVILEGED_USER}
 mkdir -p ~${UNPRIVILEGED_USER}/.ssh
 chmod 0700 ~${UNPRIVILEGED_USER}/.ssh
+touch ~${UNPRIVILEGED_USER}/.ssh/authorized_keys
 chmod 0600 ~${UNPRIVILEGED_USER}/.ssh/authorized_keys
 chown -R ${UNPRIVILEGED_USER}: ~${UNPRIVILEGED_USER}/.ssh
 if [ ! -z "${UNPRIVILEGED_USER_SSH_KEY}"]; then

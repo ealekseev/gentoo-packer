@@ -10,4 +10,5 @@ if test -f manifest.json; then
     export OUTPUT_NAME=`dirname ${IMAGE}`/${OUTPUT_NAME}
   fi
   qemu-img convert -O ${IMAGE_FORMAT} ${IMAGE} ${OUTPUT_NAME}
+  rm -f ${IMAGE}
 fi

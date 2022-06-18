@@ -55,6 +55,11 @@ variable "disk_size" {
   default = "10G"
 }
 
+variable "output_directory" {
+  type    = string
+  default = "output"
+}
+
 # source blocks are generated from your builders; a source can be referenced in
 # build blocks. A build block runs provisioner and post-processors on a
 # source. Read the documentation for source blocks here:
@@ -79,6 +84,7 @@ source "qemu" "gentoo-amd64" {
   ssh_username     = var.username
   ssh_wait_timeout = "20s"
   vm_name          = "gentoo-build-${var.stage3}"
+  output_directory = var.output_directory
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
@@ -109,15 +115,11 @@ build {
         "IMAGE_FORMAT=${var.image_format}",
         "OUTPUT_NAME=gentoo-${var.stage3}.${var.image_format}"
       ]
-      script = "./convert.sh"  
-    }
-  
-    post-processor "artifice" {
-      files = ["gentoo-${var.stage3}.${var.image_format}"]
+      script = "./convert.sh"
     }
 
-    post-processor "manifest" {
-      output = "manifest-2.json"
+    post-processor "artifice" {
+      files = ["${var.output_directory}/gentoo-${var.stage3}.${var.image_format}"]
     }
   }
 }
