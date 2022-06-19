@@ -47,12 +47,12 @@ variable "username" {
 
 variable "image_format" {
   type    = string
-  default = "qcow2"
+  default = "raw"
 }
 
 variable "disk_size" {
   type    = string
-  default = "10G"
+  default = "6G"
 }
 
 variable "output_directory" {
@@ -72,7 +72,7 @@ source "qemu" "gentoo-amd64" {
   boot_wait        = "10s"
   disk_interface   = "virtio"
   disk_size        = var.disk_size
-  format           = "qcow2"
+  format           = "raw"
   headless         = "true"
   iso_checksum     = "sha512:48d3a8f510fe2d71d6c1a84db888bc1d11756f0110be7e437ceea15dd05ab787a8c32b47a90c775b5aecadcb5c75db0bf4a5bb652922974cfbb77881eb3f6dff"
   iso_url          = "https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/${var.stage3}/install-amd64-minimal-${var.stage3}.iso"
@@ -101,17 +101,26 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = ["STAGE3=${var.stage3}", "VM_TYPE=qemu", "SCRIPTS=/tmp", "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/", "UNPRIVILEGED_USER=${var.unprivileged_user}", "UNPRIVILEGED_USER_PASSWORD=${var.unprivileged_user_password}", "GENTOO_KERNEL=${var.kernel}"]
-    scripts          = ["provision.sh"]
+    environment_vars = [
+      "STAGE3=${var.stage3}",
+      "VM_TYPE=qemu",
+      "SCRIPTS=/tmp",
+      "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/",
+      "UNPRIVILEGED_USER=${var.unprivileged_user}",
+      "UNPRIVILEGED_USER_PASSWORD=${var.unprivileged_user_password}",
+      "GENTOO_KERNEL=${var.kernel}"
+    ]
+    scripts = ["provision.sh"]
   }
 
   post-processors {
     post-processor "manifest" {
-      output = "manifest.json"
+      output = "${var.output_directory}/manifest.json"
     }
 
     post-processor "shell-local" {
       environment_vars = [
+        "MANIFEST=${var.output_directory}/manifest.json",
         "IMAGE_FORMAT=${var.image_format}",
         "OUTPUT_NAME=gentoo-${var.stage3}.${var.image_format}"
       ]
