@@ -15,6 +15,12 @@
 # views them; you can change their type later on. Read the variables type
 # constraints documentation
 # https://www.packer.io/docs/templates/hcl_templates/variables#type-constraints for more info.
+
+variable "gentoo_mirror" {
+  type = string
+  default = "https://distfiles.gentoo.org"
+}
+
 variable "stage3" {
   type    = string
   default = "20220522T170533Z"
@@ -22,12 +28,13 @@ variable "stage3" {
 
 variable "unprivileged_user" {
   type    = string
-  default = "gentoo"
+  default = ""
 }
 
 variable "unprivileged_user_password" {
+  sensitive = true
   type    = string
-  default = "Packer_123"
+  default = ""
 }
 
 variable "kernel" {
@@ -36,6 +43,7 @@ variable "kernel" {
 }
 
 variable "password" {
+  sensitive = true
   type    = string
   default = "Packer_123"
 }
@@ -75,7 +83,7 @@ source "qemu" "gentoo-amd64" {
   format           = "raw"
   headless         = "true"
   iso_checksum     = "sha512:48d3a8f510fe2d71d6c1a84db888bc1d11756f0110be7e437ceea15dd05ab787a8c32b47a90c775b5aecadcb5c75db0bf4a5bb652922974cfbb77881eb3f6dff"
-  iso_url          = "https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/${var.stage3}/install-amd64-minimal-${var.stage3}.iso"
+  iso_url          = "${var.gentoo_mirror}/releases/amd64/autobuilds/${var.stage3}/install-amd64-minimal-${var.stage3}.iso"
   net_device       = "virtio-net"
   qemuargs         = [["-display", "none"], ["-m", "2048M"], ["-smp", "cpus=2"]]
   shutdown_command = "shutdown -hP now"
@@ -105,7 +113,7 @@ build {
       "STAGE3=${var.stage3}",
       "VM_TYPE=qemu",
       "SCRIPTS=/tmp",
-      "GENTOO_MIRROR=https://mirror.yandex.ru/gentoo-distfiles/",
+      "GENTOO_MIRROR=${var.gentoo_mirror}",
       "UNPRIVILEGED_USER=${var.unprivileged_user}",
       "UNPRIVILEGED_USER_PASSWORD=${var.unprivileged_user_password}",
       "GENTOO_KERNEL=${var.kernel}"
